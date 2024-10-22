@@ -4,18 +4,18 @@ class Usuario:
 
     def __init__ (self,
                  idUsuario,
+                 codigo,
                  correoAlumno,
-                 contrasenia,
                  nombreRol):
         self.idUsuario = idUsuario
+        self.codigo = codigo
         self.correoAlumno = correoAlumno
-        self.contrasenia = contrasenia
         self.nombreRol = nombreRol
     
     def toDict(self):
         return {
             "idUsuario": self.idUsuario,
+            "codigo": self.codigo,
             "correoAlumno": self.correoAlumno,
-            "contrasenia": self.contrasenia,
             "nombreRol": self.nombreRol
         }

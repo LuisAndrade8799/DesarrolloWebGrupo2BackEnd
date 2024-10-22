@@ -19,5 +19,13 @@ class Alumno:
         self.correoAlumno = correoAlumno
         self.codigoPlan = codigoPlan
 
-    def toJSON(self):
-        return json.dumps(self.__dict__)
+    def toDict(self):
+        return {
+            "codigoAlumno": self.codigoAlumno,
+            "apellidoPaterno": self.apellidoPaterno,
+            "apelligoMaterno": self.apellidoMaterno,
+            "nombreAlumno": self.nombreAlumno,
+            "anioIngreso": self.anioIngreso,
+            "correoAlumno": self.correoAlumno,
+            "codigoPlan": self.codigoPlan
+        }
