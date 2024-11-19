@@ -1,8 +1,9 @@
 from conexion.Conexion import Conexion
 from repositorio.RepositorioUsuario import RepositorioUsuario as ru
+from repositorio.RepositorioCurso import RepositorioCurso as rc
+from repositorio.RepositorioRectificar import RepositorioRectificar as rr
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-import json
 
 app = Flask(__name__)
 CORS(app)
@@ -31,5 +32,29 @@ def registrar():
   resultado = ru.registrar(conexion,usuario,codigo,contraseina)
   return jsonify(resultado)
 
+@app.route('/api/cursos',methods=['POST'])
+def getCursos():
+  datos = request.get_json()
+  codigo = datos.get("codigo")
+  resultado = rc.getCursos(conexion,codigo)
+  return jsonify(resultado)
+
+@app.route('/api/rectificar', methods=['POST'])
+def rectificar():
+  datos = request.get_json()
+  resultado = rr.insertarRecti(conexion,datos)
+  return jsonify(resultado)
+
+@app.route('/api/ingreso', methods=['GET'])
+def getIngreso():
+  resultado = rr.getIngresos(conexion)
+  return jsonify(resultado)
+
+@app.route('/api/retiro', methods=['GET'])
+def getRetiro():
+  resultado = rr.getRetiro(conexion)
+  return jsonify(resultado)
+
 if __name__ == '__main__':
   app.run(debug=True)
+

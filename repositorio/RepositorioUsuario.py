@@ -1,5 +1,4 @@
 from sqlite3 import Connection
-from warnings import catch_warnings
 from modelo.Alumno import Alumno
 from modelo.Usuario import Usuario
 from modelo.Respuesta import Respuesta
@@ -56,10 +55,10 @@ class RepositorioUsuario:
                             insert into Usuario (id_usuario, codigo_alumno, contraseña, id_rol)
                             values ('{id_usuario}', '{codigo_alumno}', '{contrasenia}', 1);
                         """)
-            cursor.commit()
+            conexion.commit()
             cursor.close()
             return Respuesta(True,None).toDict()
         except:
-            cursor.commit()
+            conexion.commit()
             cursor.close()
             return Respuesta(False,None).toDict()
