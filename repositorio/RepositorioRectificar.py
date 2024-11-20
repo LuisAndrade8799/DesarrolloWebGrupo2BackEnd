@@ -60,7 +60,7 @@ class RepositorioRectificar:
         cursor.execute(
             f"""
                 SELECT
-                	re.numero_expediente,
+                	ic.numero_expediente,
                     m.codigo_alumno,
                     m.codigo_semestre,
                     ic.codigo_asignatura AS codigo_asignatura_ingreso,
@@ -68,13 +68,13 @@ class RepositorioRectificar:
                     ic.ingresa_2,
                     ic.observacion AS observacion_ingreso
                 FROM
-                    Matricula m
+                    IngresoCambio ic
                 LEFT JOIN
-                    Rectificacion re ON m.id_matricula = re.id_matricula
+                    Rectificacion re ON ic.numero_expediente = re.numero_expediente
                 LEFT JOIN
-                    IngresoCambio ic ON re.numero_expediente = ic.numero_expediente
+                	Matricula m ON re.id_matricula = m.id_matricula
                 WHERE
-                    m.codigo_semestre = 20242 AND ic.aprobado is null;
+                    (m.codigo_semestre = 20242 AND ic.aprobado is null);
             """
         )
         resultado = cursor.fetchall()
@@ -90,20 +90,20 @@ class RepositorioRectificar:
         cursor.execute(
             f"""
                 SELECT
-                	re.numero_expediente,
+	                r.numero_expediente,
                     m.codigo_alumno,
                     m.codigo_semestre,
                     r.codigo_asignatura AS codigo_asignatura_retiro,
                     r.retiro,
-                    r.observacion AS observacion_retiro
+                    r.observacion AS observacion_ingreso
                 FROM
-                    Matricula m
+                    Retiro r
                 LEFT JOIN
-                    Rectificacion re ON m.id_matricula = re.id_matricula
+                    Rectificacion re ON r.numero_expediente = re.numero_expediente
                 LEFT JOIN
-                  Retiro r ON re.numero_expediente = r.numero_expediente
+                	Matricula m ON re.id_matricula = m.id_matricula
                 WHERE
-                    m.codigo_semestre = 20242 AND r.aprobado is null;
+                    (m.codigo_semestre = 20242 AND r.aprobado is null);
             """
         )
         resultado = cursor.fetchall()
