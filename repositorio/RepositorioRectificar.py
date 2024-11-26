@@ -19,18 +19,18 @@ class RepositorioRectificar:
                 """
             )
             
+            # Procesar cursos para rectificación, retiro y nuevos ingresos
             for curso in datos.get("rectificar"):
                 codigoAsignatura = curso.get("codigo")
-                print("codigo asignatura: "+codigoAsignatura)
                 cambio = curso.get("cambio")
                 retiro = curso.get("retiro")
                 seccion = curso.get("seccion")
                 motivo = curso.get("motivo")
                 nuevaSeccion = curso.get("nuevaSeccion")
                 nuevaSeccion2 = curso.get("nuevaSeccion2")
+                nuevoCurso = curso.get("nuevo")  # Añadir el campo "nuevo" para indicar si es un nuevo curso
 
                 if cambio:
-                    print("Se ingreso el cambio")
                     cursor.execute(
                         f"""
                             insert into IngresoCambio (numero_expediente,codigo_asignatura,ingresa,ingresa_2, observacion, aprobado)
@@ -38,22 +38,32 @@ class RepositorioRectificar:
                         """
                     )
                     
-
                 if retiro:
-                    print("Se ingreso el retiro")
                     cursor.execute(
                         f"""
                             insert into Retiro (numero_expediente,codigo_asignatura,retiro, observacion, aprobado)
                             values ('{expediente}','{codigoAsignatura}',{seccion},'{motivo}', null)
                         """
                     )
+                
+                # Nuevo curso: Insertar en IngresoCambio con el campo "ingresa1" para la sección del nuevo curso
+                if nuevoCurso:
+                    cursor.execute(
+                        f"""
+                            insert into IngresoCambio (numero_expediente,codigo_asignatura,ingresa, observacion, aprobado)
+                            values ('{expediente}','{codigoAsignatura}',{seccion},'{motivo}', null)
+                        """
+                    )
+            
             cursor.commit()
             cursor.close()
-            return Respuesta(True,None).toDict()
-        except:
+            return Respuesta(True, None).toDict()
+        except Exception as e:
+            print(f"Error al insertar rectificación: {e}")
             cursor.commit()
             cursor.close()
-            return Respuesta(False,None).toDict()
+            return Respuesta(False, None).toDict()
+
     
     def getIngresos(conexion: Connection):
         cursor = conexion.cursor()
