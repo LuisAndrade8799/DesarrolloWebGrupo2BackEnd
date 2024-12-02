@@ -55,6 +55,11 @@ def getRetiro():
   resultado = rr.getRetiro(conexion)
   return jsonify(resultado)
 
+@app.route('/api/obtenernombres', methods=['GET'])
+def getNombre():
+  resultado = rc.getNombreCursos(conexion)
+  return jsonify(resultado)
+
 if __name__ == '__main__':
   app.run(debug=True)
 

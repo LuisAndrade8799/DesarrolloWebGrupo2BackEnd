@@ -20,10 +20,16 @@ class Respuesta:
                         "objetos": [objeto.toDict() for objeto in self.__objeto]
                     }
                 else:
-                    return {
-                        "resultado":self.__resultado,
-                        "objetos": [objeto.toDict() for objeto in self.__objeto]
-                    }
+                    if isinstance(self.__objeto[0],str):
+                        return{
+                            "resultado":self.__resultado,
+                            "nombres": [nombre for nombre in self.__objeto]
+                        }
+                    else:
+                        return {
+                            "resultado":self.__resultado,
+                            "objetos": [objeto.toDict() for objeto in self.__objeto]
+                        }
             return {
                 "resultado": self.__resultado,         
                 "objeto": self.__objeto.toDict()

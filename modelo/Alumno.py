@@ -21,7 +21,7 @@ class Alumno:
         return {
             "codigoAlumno": self.codigoAlumno,
             "apellidoPaterno": self.apellidoPaterno,
-            "apelligoMaterno": self.apellidoMaterno,
+            "apellidoMaterno": self.apellidoMaterno,
             "nombreAlumno": self.nombreAlumno,
             "anioIngreso": self.anioIngreso,
             "correoAlumno": self.correoAlumno,

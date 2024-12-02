@@ -1,5 +1,6 @@
 from sqlite3 import Connection
 
+from modelo.Curso2 import Curso2
 from modelo.Respuesta import Respuesta
 from modelo.Curso import Curso
 
@@ -10,7 +11,7 @@ class RepositorioCurso:
             f"""
                 SELECT
                     M.id_matricula, 
-                    A.codigo_asignatura,
+                    C.codigo_curso,
                     C.descripcion_asignatura AS nombre_curso,
                     A.docente,
                     A.codigo_seccion AS seccion,
@@ -36,3 +37,13 @@ class RepositorioCurso:
         else:
             cursos = [Curso(fila[0],fila[1],fila[2],fila[3],fila[4],fila[5],fila[6]) for fila in resultado]
             return Respuesta(True,cursos).toDict()
+
+    def getNombreCursos(conexion: Connection):
+        cursor=conexion.cursor()
+        cursor.execute("SELECT codigo_curso, descripcion_asignatura AS NombreCurso from Curso")
+        resultado = cursor.fetchall()
+        if resultado:
+            nombres = [Curso2(fila[0],fila[1]) for fila in resultado]
+            return Respuesta(True, nombres).toDict()
+        else:
+            return Respuesta(False,None).toDict()

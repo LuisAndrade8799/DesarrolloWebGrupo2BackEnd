@@ -11,6 +11,8 @@ class RepositorioRectificar:
         codigo = datos.get("codigoAlumno")
         expediente = datos.get("expediente")
         idMatricula = datos.get("idMatricula")
+        rectificar = datos.get("rectificar")
+        ingreso = datos.get("cursosNuevos")
         try:
             cursor.execute(
                 f"""
@@ -20,7 +22,7 @@ class RepositorioRectificar:
             )
             
             # Procesar cursos para rectificación, retiro y nuevos ingresos
-            for curso in datos.get("rectificar"):
+            for curso in rectificar:
                 codigoAsignatura = curso.get("codigo")
                 cambio = curso.get("cambio")
                 retiro = curso.get("retiro")
@@ -28,39 +30,44 @@ class RepositorioRectificar:
                 motivo = curso.get("motivo")
                 nuevaSeccion = curso.get("nuevaSeccion")
                 nuevaSeccion2 = curso.get("nuevaSeccion2")
-                nuevoCurso = curso.get("nuevo")  # Añadir el campo "nuevo" para indicar si es un nuevo curso
 
                 if cambio:
                     cursor.execute(
                         f"""
-                            insert into IngresoCambio (numero_expediente,codigo_asignatura,ingresa,ingresa_2, observacion, aprobado)
-                            values ('{expediente}','{codigoAsignatura}',{nuevaSeccion},{nuevaSeccion2},'{motivo}', null)
+                            insert into IngresoCambio (numero_expediente,codigo_curso,seccion,ingresa,ingresa_2, observacion, aprobado)
+                            values ('{expediente}','{codigoAsignatura}',{seccion},{nuevaSeccion},{nuevaSeccion2},'{motivo}', null)
                         """
                     )
                     
                 if retiro:
                     cursor.execute(
                         f"""
-                            insert into Retiro (numero_expediente,codigo_asignatura,retiro, observacion, aprobado)
+                            insert into Retiro (numero_expediente,codigo_curso,retiro, observacion, aprobado)
                             values ('{expediente}','{codigoAsignatura}',{seccion},'{motivo}', null)
                         """
                     )
                 
-                # Nuevo curso: Insertar en IngresoCambio con el campo "ingresa1" para la sección del nuevo curso
-                if nuevoCurso:
+            # Nuevo curso: Insertar en IngresoCambio con el campo "ingresa1" para la sección del nuevo curso
+            if ingreso:
+                for curso in ingreso:
+                    codigoAsignatura = curso.get("codigo")
+                    seccion = curso.get("seccion")
+                    print(seccion)
+                    motivo = curso.get("motivo")
+                    nuevaSeccion = curso.get("nuevaSeccion")
+                    nuevaSeccion2 = curso.get("nuevaSeccion2")
                     cursor.execute(
                         f"""
-                            insert into IngresoCambio (numero_expediente,codigo_asignatura,ingresa, observacion, aprobado)
-                            values ('{expediente}','{codigoAsignatura}',{seccion},'{motivo}', null)
+                            insert into IngresoCambio (numero_expediente,codigo_curso,seccion,ingresa,ingresa_2, observacion, aprobado)
+                            values ('{expediente}','{codigoAsignatura}',{seccion},{nuevaSeccion},{nuevaSeccion2},'{motivo}', null)
                         """
                     )
-            
-            cursor.commit()
+            conexion.commit()
             cursor.close()
             return Respuesta(True, None).toDict()
         except Exception as e:
             print(f"Error al insertar rectificación: {e}")
-            cursor.commit()
+            conexion.rollback()
             cursor.close()
             return Respuesta(False, None).toDict()
 
@@ -73,7 +80,7 @@ class RepositorioRectificar:
                 	ic.numero_expediente,
                     m.codigo_alumno,
                     m.codigo_semestre,
-                    ic.codigo_asignatura AS codigo_asignatura_ingreso,
+                    ic.codigo_curso AS codigo_curso_ingreso,
                     ic.ingresa,
                     ic.ingresa_2,
                     ic.observacion AS observacion_ingreso
@@ -103,7 +110,7 @@ class RepositorioRectificar:
 	                r.numero_expediente,
                     m.codigo_alumno,
                     m.codigo_semestre,
-                    r.codigo_asignatura AS codigo_asignatura_retiro,
+                    r.codigo_curso AS codigo_curso_retiro,
                     r.retiro,
                     r.observacion AS observacion_ingreso
                 FROM
