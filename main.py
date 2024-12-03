@@ -60,6 +60,20 @@ def getNombre():
   resultado = rc.getNombreCursos(conexion)
   return jsonify(resultado)
 
+@app.route('/api/estadoIngreso', methods=['POST'])
+def listarIngreso():
+  datos = request.get_json()
+  codigo = datos.get("codigo")
+  resultado = rr.listarIngresoCambio(conexion,codigo)
+  return jsonify(resultado)
+
+@app.route('/api/estadoRetiro', methods=['POST'])
+def listarRetiro():
+  datos = request.get_json()
+  codigo = datos.get("codigo")
+  resultado = rr.listarRetiro(conexion,codigo)
+  return jsonify(resultado)
+
 if __name__ == '__main__':
   app.run(debug=True)
 
