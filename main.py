@@ -74,6 +74,16 @@ def listarRetiro():
   resultado = rr.listarRetiro(conexion,codigo)
   return jsonify(resultado)
 
+@app.route('/api/estadoIngreso2', methods=['GET'])
+def listarIngreso2():
+  resultado = rr.listarIngresoCambio2(conexion)
+  return jsonify(resultado)
+
+@app.route('/api/estadoRetiro2', methods=['GET'])
+def listarRetiro2():
+  resultado = rr.listarRetiro2(conexion)
+  return jsonify(resultado)
+
 if __name__ == '__main__':
   app.run(debug=True)
 

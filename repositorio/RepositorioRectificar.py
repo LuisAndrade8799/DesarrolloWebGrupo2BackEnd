@@ -149,7 +149,24 @@ class RepositorioRectificar:
             return Respuesta(True,ingreso).toDict()
         else:
             return Respuesta(False,None).toDict()
-        
+    
+    def listarIngresoCambio2(conexion:Connection):
+        cursor = conexion.cursor()
+        cursor.execute(
+            f"""
+                select * from Rectificacion
+                inner join IngresoCambio on IngresoCambio.numero_expediente = Rectificacion.numero_expediente
+                where IngresoCambio.aprobado = 1;
+            """
+        )
+        resultado = cursor.fetchall()
+        cursor.close()
+        if resultado:
+            ingreso = [IngresoCambio(fila[0],fila[1],fila[2],fila[3],fila[5],fila[6],fila[7],fila[8],fila[9],fila[10]) for fila in resultado]
+            return Respuesta(True,ingreso).toDict()
+        else:
+            return Respuesta(False,None).toDict()
+
     def listarRetiro(conexion:Connection, codigo):
         cursor = conexion.cursor()
         cursor.execute(
@@ -157,6 +174,23 @@ class RepositorioRectificar:
                 select * from Rectificacion
                 inner join Retiro on Retiro.numero_expediente = Rectificacion.numero_expediente
                 where Rectificacion.codigo_alumno = '{codigo}';
+            """
+        )
+        resultado = cursor.fetchall()
+        cursor.close()
+        if resultado:
+            retiro = [Retiro2(fila[0],fila[1],fila[2],fila[3],fila[5],fila[6],fila[7],fila[8]) for fila in resultado]
+            return Respuesta(True,retiro).toDict()
+        else:
+            return Respuesta(False,None).toDict()
+        
+    def listarRetiro2(conexion:Connection):
+        cursor = conexion.cursor()
+        cursor.execute(
+            f"""
+                select * from Rectificacion
+                inner join Retiro on Retiro.numero_expediente = Rectificacion.numero_expediente
+                where Retiro.aprobado = 1;
             """
         )
         resultado = cursor.fetchall()
